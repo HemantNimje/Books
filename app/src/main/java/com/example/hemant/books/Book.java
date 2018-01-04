@@ -1,6 +1,7 @@
 package com.example.hemant.books;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Book {
 
@@ -8,15 +9,14 @@ public class Book {
     private String mTitle;
 
     // Name of authors for the book
-    private ArrayList<String> mAuthors;
+    private List<String> mAuthors;
 
     /**
      * Create new object of book
-     *
-     * @param title   is the title of the book
+     *  @param title   is the title of the book
      * @param authors is the list containing name of the authors
      */
-    public Book(String title, ArrayList<String> authors) {
+    public Book(String title, List<String> authors) {
         mTitle = title;
         mAuthors = authors;
     }
@@ -32,7 +32,7 @@ public class Book {
     }
 
     // Get the authors list
-    public ArrayList<String> getAuthors() {
+    public List<String> getAuthors() {
         return mAuthors;
     }
 
