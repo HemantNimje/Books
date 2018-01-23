@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity
     // Search button
     private Button searchButton;
 
+    // Listview
+    private ListView bookListView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // Find reference to the {@link ListView} in the layout
-        ListView bookListView = findViewById(R.id.list);
+        bookListView = findViewById(R.id.list);
 
         mEmptyStateTextView = findViewById(R.id.empty_view);
         bookListView.setEmptyView(mEmptyStateTextView);
@@ -77,44 +80,40 @@ public class MainActivity extends AppCompatActivity
         // Find reference to the Search Button in the layout
         searchButton = findViewById(R.id.search_button);
 
-        // Handle search button click event
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // If keywords are not empty update search query
-                if (!TextUtils.isEmpty(searchKeywords.getText())) {
-
-                    // Make the progress spinner visible
-                    mProgressBar.setVisibility(View.VISIBLE);
-
-                    // Update the {@link BOOK_REQUEST_URL} based on the user keywords
-                    UpdateBookRequestUrl(searchKeywords.getText().toString());
-                    Toast.makeText(MainActivity.this,BOOK_REQUEST_URL,Toast.LENGTH_SHORT).show();
-
-                    // Check if the device is connected to the internet
-                    if (isConnectedToNetwork()) {
-
-                        // Interact with the loaders using loader manager
-                        executeLoader();
-                    } else {
-                        //Hide the progress bar
-                        mProgressBar.setVisibility(View.GONE);
-
-                        //Notify no internet connection
-                        mEmptyStateTextView.setText(R.string.no_internet_connection);
-                    }
-
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.keyword_missing_error,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
     }
 
-    private void executeLoader(){
+    public void SearchBooks(View view) {
+        // If keywords are not empty update search query
+        if (!TextUtils.isEmpty(searchKeywords.getText())) {
+
+            // Make the progress spinner visible
+            mProgressBar.setVisibility(View.VISIBLE);
+
+            // Update the {@link BOOK_REQUEST_URL} based on the user keywords
+            UpdateBookRequestUrl(searchKeywords.getText().toString());
+            Toast.makeText(MainActivity.this, BOOK_REQUEST_URL, Toast.LENGTH_SHORT).show();
+
+            // Check if the device is connected to the internet
+            if (isConnectedToNetwork()) {
+
+                // Interact with the loaders using loader manager
+                executeLoader();
+            } else {
+                //Hide the progress bar
+                mProgressBar.setVisibility(View.GONE);
+
+                //Notify no internet connection
+                mEmptyStateTextView.setText(R.string.no_internet_connection);
+            }
+
+
+        } else {
+            Toast.makeText(MainActivity.this, R.string.keyword_missing_error,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void executeLoader() {
         getLoaderManager().initLoader(BOOK_LOADER_ID, null, this);
     }
 
@@ -144,20 +143,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> data) {
+
         //Hide the loading indicator
         mProgressBar.setVisibility(View.GONE);
 
-        // Set empty state text to display "No earthquakes found."
+        // Set empty state text to display "No books found."
         mEmptyStateTextView.setText(R.string.no_book);
 
-        // Clear the adapter of previous earthquake data
+        // Clear the adapter of previous book data
         mAdapter.clear();
 
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // If there is a valid list of {@link Book}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (data != null && !data.isEmpty()) {
             mAdapter.addAll(data);
         }
+
+        // Release the loader resources
+        getLoaderManager().destroyLoader(BOOK_LOADER_ID);
     }
 
     @Override
