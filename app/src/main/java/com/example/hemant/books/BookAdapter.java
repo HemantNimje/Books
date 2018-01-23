@@ -3,6 +3,7 @@ package com.example.hemant.books;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,11 +63,14 @@ public class BookAdapter extends ArrayAdapter<Book> {
         List<String> authorList = currentBook.getAuthors();
 
         // String for adding all author names in it seperated by ,
-        String authors = null;
+        String authors = "";
 
         Iterator i = authorList.iterator();
         while (i.hasNext()) {
+            // Add author name
             authors += i.next();
+
+            // if author list have another name add comma
             if (i.hasNext()) {
                 authors = authors + ", ";
             }
