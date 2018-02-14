@@ -10,6 +10,7 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     // Query url
     private String mUrl;
+    List<Book> result;
 
     public BookLoader(Context context, String url) {
         super(context);
@@ -18,17 +19,27 @@ public class BookLoader extends AsyncTaskLoader<List<Book>> {
 
     @Override
     protected void onStartLoading() {
-        forceLoad();
+        if (result != null) {
+            deliverResult(result);
+        } else {
+            forceLoad();
+        }
     }
 
     @Override
     public List<Book> loadInBackground() {
-        if (mUrl == null){
+        if (mUrl == null) {
             return null;
         }
 
         // Perform network request, parse response and extract list of books
-        List<Book> result = QueryUtils.fetchBooks(mUrl);
+        result = QueryUtils.fetchBooks(mUrl);
         return result;
+    }
+
+    @Override
+    public void deliverResult(List<Book> data) {
+        result = data;
+        super.deliverResult(data);
     }
 }
